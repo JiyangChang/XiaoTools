@@ -3,15 +3,16 @@
 
 """
 A script to plot the BUSCO result
-----------------------------------
+
 Make sure you have used the *SAME* BUSCO database for all the samples
 
 Usage:
-    python3 Busco_plot.py -i <input_dir> -o <output_dir> -w <width>
+    python3 Busco_plot.py -i <input_file> -o <output_dir> -w <width> -p <prefix>
 
-    input_dir: A file containing the path to every BUSCO report, one per line
+    input_file: A file containing the path to every BUSCO report, one per line
     output_dir: The directory to save the plot  (default: ./)
     width: A float number represent the width of the bar (default: 0.5)
+    prefix: Prefix of the output files (default: "all")
 
 Output:
     complete_busco_num.pdf: The plot of the BUSCO result in number
@@ -33,7 +34,7 @@ import matplotlib.pyplot as plt
 __author__ = "Chang, Jiyang"
 __mail__ = "jiyang.chang@psb.ugent.be"
 
-def plot_busco(input_file, output_dir, width):
+def plot_busco(input_file, output_dir, width, prefix):
     """
     This function is used to plot the BUSCO result
     Inlcuding the results from TransDecoder, Braker, GeMoMa and the final EVM
@@ -100,6 +101,8 @@ def plot_busco(input_file, output_dir, width):
                     missing_busco = int(re.search(r'\d+', line).group())
                 elif re.search(r'Total BUSCO groups searched', line):
                     total_busco = int(re.search(r'\d+', line).group())
+                elif re.search(r'Dependencies and versions:', line):
+                    break
                 else:
                     print("Error: Unrecognized BUSCO line, please check the BUSCO report!")
                     sys.exit(1)
@@ -132,7 +135,7 @@ def plot_busco(input_file, output_dir, width):
     ax1.barh(sample, fragmented_busco_num, width, label="Fragmented BUSCO", left=left, color=category_colors[2])
     left += fragmented_busco_num
     ax1.barh(sample, missing_busco_num, width, label="Missing BUSCO", left=left, color=category_colors[3])
-    ax1.axvline(1453, linestyle="--", color="grey")
+    ax1.axvline(round(0.9 * float(total_busco_num[0])), linestyle="--", color="grey")
 
     ax1.set_xlim(0, max(total_busco_num))
     ax1.set_title('BUSCO Assessment Results', loc="center", y=1.12)
@@ -143,7 +146,7 @@ def plot_busco(input_file, output_dir, width):
 
     xlabels = ax1.get_xticklabels()
     plt.setp(xlabels, rotation=45, horizontalalignment='center')
-    fig1.savefig(os.path.join(output_dir, 'all_busco_summary_num.pdf'), dpi=300, bbox_inches="tight")
+    fig1.savefig(os.path.join(output_dir, f'{prefix}_busco_summary_num.pdf'), dpi=300, bbox_inches="tight")
 
     # Plot the BUSCO percentage result
     left = np.zeros(sample.size)
@@ -168,7 +171,7 @@ def plot_busco(input_file, output_dir, width):
     
     xlabels = ax2.get_xticklabels()
     plt.setp(xlabels, rotation=45, horizontalalignment='center')
-    fig2.savefig(os.path.join(output_dir, 'all_busco_summary_percent.pdf'), dpi=300, bbox_inches="tight")
+    fig2.savefig(os.path.join(output_dir, f'{prefix}_busco_summary_percent.pdf'), dpi=300, bbox_inches="tight")
 
 def main():
     """
@@ -178,9 +181,10 @@ def main():
     parser.add_argument("-i", "--input", type=str, required=True, help="The input file")
     parser.add_argument("-o", "--output", type=str, help="The output file", default="./")
     parser.add_argument("-w", "--width", type=float, help="Width of the bar", default=0.5)
+    parser.add_argument("-p", "--prefix", type=str, help="Prefix of the output files", default="all")
     args = parser.parse_args()
 
-    plot_busco(args.input, args.output, args.width)
+    plot_busco(args.input, args.output, args.width, args.prefix)
 
 if __name__ == "__main__":
     main()
