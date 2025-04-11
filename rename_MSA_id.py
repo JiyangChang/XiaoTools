@@ -1,12 +1,12 @@
 """
-Rename sequence IDs in .fa files based on a specified rule file.
+Rename sequence IDs in .align files based on a specified rule file.
 
 Usage:
-    python rename_seqid.py -r rule.txt -d /path/to/dir
+    python rename_MSA_id.py -r rule.txt -d /path/to/dir
 
 Options:
     -r, --rule       The file containing rename rules.
-    -d, --directory  The directory containing files to rename.
+    -d, --directory  The directory containing files to rename its sequence ID.
     -o, --output     The output directory for renamed files. Default is "rename".
     -h, --help       Show this help message and exit.
 
