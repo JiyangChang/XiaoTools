@@ -1,0 +1,5 @@
+# y, xstart, xend, rotation, color, label, va,  bed
+.6,     .1,    .8,       0,      , [upper species1 name], top, species1.bed
+.4,     .1,    .8,       0,      , [lower species2 name], top, species2.bed
+# edges
+e, 0, 1, species1.species2.anchors.simple
