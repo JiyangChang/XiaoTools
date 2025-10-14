@@ -9,3 +9,5 @@ Miscellaneous scripts
 
 `tqdm` is needed for the following scripts:
 - rename_MSA_id.py
+
+`JCVI` is needed for `Easy_JCVI.py`
